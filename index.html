@@ -4,16 +4,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Para você ❤️</title>
+  <title>For my honey</title>
+  <link rel="icon" type="image/x-icon" href="./img/favicon.ico" />
   <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
   <canvas id="matrix-canvas"></canvas>
 
-  <div class="message-wrapper">
-    <div class="message-box">
-      <div id="dynamic-message" class="changing-text">Feliz 3 meses</div>
+  <div class="envelope-wrapper">
+    <div class="envelope" id="envelope">
+      <div class="envelope-front">
+        <div class="heart-seal">❤️</div>
+        <div class="envelope-text">Clique para abrir</div>
+      </div>
+      <div class="letter">
+        <div class="letter-content">
+          <div class="letter-photo">
+            <img id="dynamic-image" src="https://placehold.co/400x300/ff6699/white?text=Nossa+Foto"
+              alt="Momento especial">
+          </div>
+          <div class="letter-message">
+            <p class="greeting">Para meu amor,</p>
+            <p class="message-text" id="dynamic-message">
+              Feliz 3 meses! 💖<br>Cada dia ao seu lado é um presente.
+            </p>
+            <p class="signature">Com todo meu carinho,<br>Seu amor ❤️</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

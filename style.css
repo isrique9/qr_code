@@ -12,7 +12,6 @@ body {
   position: relative;
 }
 
-/* Canvas da chuva de código (matrix rain) */
 #matrix-canvas {
   position: fixed;
   top: 0;
@@ -23,8 +22,7 @@ body {
   z-index: 1;
 }
 
-/* Container central da mensagem */
-.message-wrapper {
+.envelope-wrapper {
   position: relative;
   z-index: 2;
   width: 100%;
@@ -35,49 +33,164 @@ body {
   pointer-events: none;
 }
 
-.message-box {
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(12px);
-  border-radius: 48px;
-  padding: 1.2rem 2rem;
-  border: 1px solid rgba(255, 181, 199, 0.5);
-  box-shadow: 0 0 40px rgba(255, 0, 140, 0.3);
-  text-align: center;
-  transition: all 0.3s ease;
-  max-width: 90vw;
+.envelope {
+  pointer-events: auto;
+  position: relative;
+  width: 320px;
+  height: 220px;
+  background: #ffd9b5;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
-.changing-text {
-  color: #ff66b2;
-  font-size: 2.2rem;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-shadow: 0 0 12px #ff1493, 0 0 2px #ffb6c1;
-  font-family: inherit;
-  white-space: nowrap;
-  animation: subtleGlow 1.5s ease-in-out infinite alternate;
+.envelope:hover {
+  transform: scale(1.02);
 }
 
-/* Pequeno brilho suave na mensagem */
-@keyframes subtleGlow {
+.envelope-front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffc98f, #ffb56b);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  backface-visibility: hidden;
+  border: 1px solid rgba(255, 215, 170, 0.8);
+}
+
+.heart-seal {
+  font-size: 3rem;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
   0% {
-    text-shadow: 0 0 5px #ff66b2, 0 0 8px #ff1493;
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
   }
 
   100% {
-    text-shadow: 0 0 12px #ff99cc, 0 0 18px #ff007f;
+    transform: scale(1);
   }
 }
 
-/* Ajuste mobile: quebra de linha se necessário */
+.envelope-text {
+  font-family: 'Courier New', monospace;
+  color: #8b3c1c;
+  font-weight: bold;
+  background: rgba(255, 245, 220, 0.7);
+  padding: 6px 12px;
+  border-radius: 40px;
+  font-size: 0.9rem;
+}
+
+.letter {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  right: 15px;
+  background: #fffef7;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 18px;
+  transition: all 0.5s ease-out;
+  transform: translateY(100%) scale(0.95);
+  opacity: 0;
+  z-index: 5;
+  max-height: 70vh;
+  overflow-y: auto;
+  pointer-events: none;
+}
+
+.envelope.open .envelope-front {
+  transform: translateY(-100%) rotateX(80deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.envelope.open .letter {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.letter-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.letter-photo {
+  text-align: center;
+}
+
+.letter-photo img {
+  width: 100%;
+  max-height: 300px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  border: 2px solid #ff99cc;
+  transition: opacity 0.4s ease;
+}
+
+.letter-message {
+  font-family: 'Segoe UI', 'Courier New', monospace;
+  color: #2c1a0e;
+}
+
+.greeting {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #d44c2f;
+}
+
+.message-text {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 8px 0;
+  white-space: pre-line;
+  transition: opacity 0.3s ease;
+}
+
+.signature {
+  margin-top: 12px;
+  text-align: right;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #b35f3a;
+}
+
 @media (max-width: 500px) {
-  .changing-text {
-    font-size: 1.8rem;
-    white-space: normal;
-    word-break: keep-all;
+  .envelope {
+    width: 280px;
+    height: 190px;
   }
 
-  .message-box {
-    padding: 0.8rem 1.5rem;
+  .letter {
+    left: 10px;
+    right: 10px;
+    padding: 12px;
+  }
+
+  .greeting {
+    font-size: 1rem;
+  }
+
+  .message-text {
+    font-size: 0.9rem;
   }
 }

@@ -1,5 +1,5 @@
 // --------------------------------------------------------------
-// 1. MATRIX RAIN (CASCATA INTENSA - MUITOS CARACTERES CAINDO)
+// 1. MATRIX RAIN (CASCATA INTENSA)
 // --------------------------------------------------------------
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
@@ -13,12 +13,10 @@ const charArray = chars.split('');
 let columns;
 let drops = [];
 
-// Configurações da chuva
 const fontSize = 14;
 let speed = 0.3;
 const TAIL_LENGTH = 8;
 
-// Inicializa as colunas e as posições de queda
 function initMatrix() {
   columns = Math.floor(width / fontSize);
   drops = [];
@@ -27,16 +25,11 @@ function initMatrix() {
   }
 }
 
-// Função que desenha a chuva densa (com TRILHA de 5 caracteres por coluna)
 function drawMatrix() {
-  // Fundo preto com fade (cria o efeito de rastro clássico)
   ctx.fillStyle = 'rgba(0, 0, 0, 0.07)';
   ctx.fillRect(0, 0, width, height);
-
-  // Define o estilo da fonte (mesmo tamanho em todas)
   ctx.font = `${fontSize}px 'Courier New', monospace`;
 
-  // Percorre cada coluna
   for (let i = 0; i < drops.length; i++) {
     const x = i * fontSize;
     const headRow = drops[i];
@@ -44,7 +37,6 @@ function drawMatrix() {
     for (let t = 0; t < TAIL_LENGTH; t++) {
       const rowOffset = t;
       let yPos = (headRow - rowOffset) * fontSize;
-
 
       if (yPos > 0 && yPos < height + fontSize) {
         const randomChar = charArray[Math.floor(Math.random() * charArray.length)];
@@ -59,7 +51,6 @@ function drawMatrix() {
           ctx.shadowBlur = 2;
           ctx.shadowColor = '#ab307e';
         }
-
         ctx.fillText(randomChar, x, yPos);
       }
     }
@@ -70,18 +61,13 @@ function drawMatrix() {
     if (drops[i] > maxRow && Math.random() > 0.97) {
       drops[i] = Math.random() * -30;
     }
-
-    // Pequena chance extra de resetar antes para dar aleatoriedade (efeito mais orgânico)
     if (drops[i] > (height / fontSize) + 2 && Math.random() > 0.99) {
       drops[i] = Math.random() * -20;
     }
   }
-
-  // Reseta o shadow para não afetar outros desenhos (se houver)
   ctx.shadowBlur = 0;
 }
 
-// Ajusta canvas ao redimensionar a tela
 function resizeCanvas() {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -90,13 +76,9 @@ function resizeCanvas() {
   initMatrix();
 }
 
-window.addEventListener('resize', () => {
-  resizeCanvas();
-});
-
+window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-// Animar a matrix (60fps suave)
 function animateMatrix() {
   drawMatrix();
   requestAnimationFrame(animateMatrix);
@@ -104,16 +86,88 @@ function animateMatrix() {
 animateMatrix();
 
 // --------------------------------------------------------------
-// 2. MENSAGENS QUE ALTERAM A CADA 2 SEGUNDOS (ROMÂNTICO)
+// 2. CARTA INTERATIVA COM MENSAGENS E IMAGENS VARIÁVEIS
 // --------------------------------------------------------------
-const messages = ["Feliz 3 meses", "Eu te amo 💖"];
-let index = 0;
-const messageElement = document.getElementById('dynamic-message');
+const envelope = document.getElementById('envelope');
+const messageEl = document.getElementById('dynamic-message');
+const imageEl = document.getElementById('dynamic-image');
 
-function rotateMessage() {
-  index = (index + 1) % messages.length;
-  messageElement.textContent = messages[index];
+// 📚 Banco de dados romântico: cada item tem uma frase e uma URL de imagem
+const romanticContent = [
+  {
+    text: "Feliz 3 meses, meu amor! 💖<br>Cada dia com você é um presente.",
+    image: "./img/mes5.png"
+  },
+  {
+    text: "Você ilumina minha vida 🌟<br>Te amo infinitamente!",
+    image: "./img/mes1.jpeg"
+  },
+  {
+    text: "3 meses de pura alegria ao seu lado.<br>Você é minha pessoa favorita.",
+    image: "./img/mes2.jpeg"
+  },
+  {
+    text: "Meu coração bate mais forte por você 💓<br>Obrigado por existir.",
+    image: "./img/mes3.jpeg"
+  },
+  {
+    text: "Que venham muitos outros meses juntos!<br>Você é tudo para mim.",
+    image: "./img/mes4.jpeg"
+  }
+];
+
+let currentIndex = 0;
+
+function updateLetterContent(index) {
+  const content = romanticContent[index];
+  if (!content) return;
+
+  // Suave fade out/in para texto e imagem
+  messageEl.style.opacity = '0';
+  imageEl.style.opacity = '0';
+
+  setTimeout(() => {
+    messageEl.innerHTML = content.text;
+    imageEl.src = content.image;
+    messageEl.style.opacity = '1';
+    imageEl.style.opacity = '1';
+  }, 200);
 }
 
-// Começa com a primeira mensagem já visível e alterna a cada 2 segundos
-setInterval(rotateMessage, 2000);
+// Alterna automaticamente a cada 5 segundos apenas se a carta estiver ABERTa
+let intervalId = null;
+
+function startRotation() {
+  if (intervalId) clearInterval(intervalId);
+  intervalId = setInterval(() => {
+    // só troca se o envelope estiver aberto
+    if (envelope.classList.contains('open')) {
+      currentIndex = (currentIndex + 1) % romanticContent.length;
+      updateLetterContent(currentIndex);
+    }
+  }, 5000);
+}
+
+function stopRotation() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+}
+
+// Ao clicar no envelope, abre/fecha e controla a rotação
+envelope.addEventListener('click', () => {
+  const wasOpen = envelope.classList.contains('open');
+  envelope.classList.toggle('open');
+
+  if (!wasOpen) {
+    // acabou de abrir: inicia a rotação
+    startRotation();
+  } else {
+    // fechou: para a rotação
+    stopRotation();
+  }
+});
+
+// Inicializa com o primeiro conteúdo
+updateLetterContent(0);
